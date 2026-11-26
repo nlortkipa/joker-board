@@ -1,0 +1,15 @@
+services:
+  joker-board:
+    build: .
+    container_name: joker-board
+    ports:
+      - "3000:3000"
+    volumes:
+      - joker-data:/data
+    environment:
+      # Optional password protection (user:password)
+      # BASIC_AUTH: "family:change-me"
+    restart: unless-stopped
+
+volumes:
+  joker-data:
