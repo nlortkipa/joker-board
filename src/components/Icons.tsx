@@ -100,6 +100,12 @@ export const Upload = (p: P) => (
     <path d="M12 16V5M7 10l5-5 5 5M5 20h14" />
   </svg>
 );
+export const Camera = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.3-2h6l1.3 2h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-8Z" />
+    <circle cx="12" cy="12.5" r="3.2" />
+  </svg>
+);
 export const Undo = (p: P) => (
   <svg {...base(p)}>
     <path d="M9 14 4 9l5-5" />

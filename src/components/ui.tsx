@@ -65,8 +65,10 @@ export function Modal({
   children,
   footer,
   wide,
+  className,
 }: {
   title?: ReactNode;
+  className?: string;
   onClose: () => void;
   children: ReactNode;
   footer?: ReactNode;
@@ -94,7 +96,7 @@ export function Modal({
       className={cx('overlay', closing && 'closing')}
       onMouseDown={(e) => e.target === e.currentTarget && close.current()}
     >
-      <div className={cx('modal', wide && 'wide')} role="dialog" aria-modal aria-label={typeof title === 'string' ? title : undefined}>
+      <div className={cx('modal', wide && 'wide', className)} role="dialog" aria-modal aria-label={typeof title === 'string' ? title : undefined}>
         <div className="grabber" />
         {title && (
           <div className="modal-head">

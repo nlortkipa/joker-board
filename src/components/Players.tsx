@@ -4,7 +4,7 @@ import { pct, playerStats, results } from '../lib/stats';
 import { deletePlayer, savePlayer, uid } from '../lib/store';
 import { toast } from '../lib/toast';
 import { COLOR_NAMES, cx, EMOJIS, imageToAvatar } from '../lib/util';
-import { Pencil, Plus, Trash, Upload } from './Icons';
+import { Camera, Check, Pencil, Plus, Trash } from './Icons';
 import { Avatar, Empty, Modal, pcStyle } from './ui';
 
 export function newPlayer(name: string, taken: Player[]): Player {
@@ -100,6 +100,7 @@ export function PlayerEditor({
 }) {
   const [draft, setDraft] = useState(player);
   const [confirm, setConfirm] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const name = draft.name.trim();
   const dupe = players.some((p) => p.id !== draft.id && p.name.toLowerCase() === name.toLowerCase());
@@ -127,15 +128,12 @@ export function PlayerEditor({
     <Modal
       title={isNew ? 'ახალი მოთამაშე' : 'მოთამაშის რედაქტირება'}
       onClose={onClose}
+      className="player-editor"
       footer={
         <>
           {!isNew && (
             <div className="left">
-              {inGames ? (
-                <span className="faint" style={{ fontSize: 12 }}>
-                  თამაშები აქვს — ვერ წაიშლება
-                </span>
-              ) : confirm ? (
+              {inGames ? null : confirm ? (
                 <button
                   className="btn danger"
                   onClick={() => {
@@ -162,13 +160,65 @@ export function PlayerEditor({
         </>
       }
     >
-      <div className="preview-avatar">
-        <button className="avatar-pick" onClick={() => fileInput.current?.click()} aria-label="ფოტოს არჩევა" title="ფოტოს არჩევა">
+      <div
+        className={cx('pe-hero', dragOver && 'drag')}
+        style={pcStyle(draft)}
+        onDragOver={(e) => {
+          if (![...e.dataTransfer.types].includes('Files')) return;
+          e.preventDefault();
+          setDragOver(true);
+        }}
+        onDragLeave={(e) => !e.currentTarget.contains(e.relatedTarget as Node) && setDragOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragOver(false);
+          pickPhoto(e.dataTransfer.files?.[0]);
+        }}
+      >
+        <button
+          className="pe-avatar"
+          onClick={() => fileInput.current?.click()}
+          aria-label={draft.photo ? 'ფოტოს შეცვლა' : 'ფოტოს ატვირთვა'}
+          title={draft.photo ? 'ფოტოს შეცვლა' : 'ფოტოს ატვირთვა'}
+        >
           <Avatar player={draft} key={(draft.photo ?? draft.emoji) + draft.color} className="bump" />
-          <span className="avatar-pick-badge">
-            <Upload size={13} />
+          <span className="pe-avatar-veil">
+            <Camera size={22} />
           </span>
         </button>
+        <div className="pe-ident">
+          <label className="field">
+            <span>სახელი</span>
+            <input
+              className={cx('input', dupe && 'invalid')}
+              autoFocus
+              value={draft.name}
+              maxLength={24}
+              placeholder="მაგ. ბებო"
+              onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+              onKeyDown={(e) => e.key === 'Enter' && save()}
+            />
+          </label>
+          {dupe ? (
+            <small className="pe-error">ეს სახელი უკვე დაკავებულია</small>
+          ) : (
+            <div className="pe-photo-actions">
+              <button className="pe-chip" onClick={() => fileInput.current?.click()}>
+                <Camera size={14} /> {draft.photo ? 'ფოტოს შეცვლა' : 'ფოტოს ატვირთვა'}
+              </button>
+              {draft.photo && (
+                <button
+                  className="pe-chip danger"
+                  onClick={() => setDraft({ ...draft, photo: undefined })}
+                  aria-label="ფოტოს მოშორება"
+                  title="ფოტოს მოშორება"
+                >
+                  <Trash size={14} />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
         <input
           ref={fileInput}
           type="file"
@@ -180,46 +230,24 @@ export function PlayerEditor({
           }}
         />
       </div>
-      <label className="field">
-        <span>სახელი</span>
-        <input
-          className="input"
-          autoFocus
-          value={draft.name}
-          maxLength={24}
-          placeholder="მაგ. ბებო"
-          onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-          onKeyDown={(e) => e.key === 'Enter' && save()}
-        />
-        {dupe && <small style={{ color: 'var(--bad)' }}>ეს სახელი უკვე დაკავებულია</small>}
-      </label>
-      <div className="field">
-        <span>ავატარი</span>
-        <div className="photo-actions">
-          <button className="btn" onClick={() => fileInput.current?.click()}>
-            <Upload /> {draft.photo ? 'ფოტოს შეცვლა' : 'ფოტოს ატვირთვა'}
-          </button>
-          {draft.photo && (
-            <button className="btn ghost danger" onClick={() => setDraft({ ...draft, photo: undefined })}>
-              <Trash /> ფოტოს მოშორება
-            </button>
-          )}
-        </div>
-        <div className="emoji-grid">
+
+      <section className="pe-section">
+        <div className={cx('emoji-grid', draft.photo && 'dim')}>
           {EMOJIS.map((e) => (
             <button
               key={e}
               className={cx(!draft.photo && draft.emoji === e && 'on')}
               onClick={() => setDraft({ ...draft, emoji: e, photo: undefined })}
               aria-label={e}
+              aria-pressed={!draft.photo && draft.emoji === e}
             >
               {e}
             </button>
           ))}
         </div>
-      </div>
-      <div className="field">
-        <span>ფერი</span>
+      </section>
+
+      <section className="pe-section">
         <div className="swatches">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((c) => (
             <button
@@ -228,11 +256,14 @@ export function PlayerEditor({
               style={pcStyle({ color: c })}
               onClick={() => setDraft({ ...draft, color: c })}
               aria-label={COLOR_NAMES[c]}
+              aria-pressed={draft.color === c}
               title={COLOR_NAMES[c]}
-            />
+            >
+              <Check size={14} />
+            </button>
           ))}
         </div>
-      </div>
+      </section>
     </Modal>
   );
 }
