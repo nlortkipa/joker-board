@@ -1653,71 +1653,96 @@ button {
 }
 .player-card {
   overflow: hidden;
-  padding: 22px 16px 14px;
-  background: linear-gradient(180deg, var(--bg-elev) 40%, color-mix(in srgb, var(--pc, var(--accent)) 8%, var(--bg-elev)));
+  padding: 26px 14px 14px;
+  background:
+    radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--pc, var(--accent)) 22%, transparent), transparent 70%),
+    var(--bg-elev);
+  border: 0.5px solid color-mix(in srgb, var(--pc, var(--accent)) 22%, var(--border));
+  border-radius: 14px;
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 4px;
+  gap: 6px;
   position: relative;
   transition:
     transform var(--normal) var(--ease-out),
-    box-shadow var(--normal);
+    box-shadow var(--normal),
+    border-color var(--normal);
   animation: page-in var(--slow) var(--ease-out) both;
 }
 .player-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--pc, var(--accent)) 45%, var(--border));
   box-shadow:
     var(--shadow-md),
-    0 12px 28px -14px color-mix(in srgb, var(--pc, var(--accent)) 70%, transparent);
-}
-.player-card:not(.add)::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 62px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--pc) 55%, #fff), var(--pc));
-  opacity: 0.9;
+    0 14px 30px -16px color-mix(in srgb, var(--pc, var(--accent)) 75%, transparent);
 }
 .player-card .avatar {
-  --size: 68px;
-  margin-bottom: 8px;
+  --size: 72px;
+  margin-bottom: 6px;
   background: color-mix(in srgb, var(--pc) 16%, var(--bg-elev));
   box-shadow:
-    0 0 0 4px var(--bg-elev),
-    inset 0 0 0 2px color-mix(in srgb, var(--pc) 70%, transparent);
+    0 0 0 2px var(--bg-elev),
+    0 0 0 4px color-mix(in srgb, var(--pc) 80%, transparent),
+    0 8px 20px -8px color-mix(in srgb, var(--pc) 80%, transparent);
+  transition: transform var(--normal) var(--ease-spring);
 }
-.player-card .edit {
-  z-index: 1;
-  color: #fff;
+.player-card:hover .avatar {
+  transform: scale(1.04);
 }
 .player-card .pname {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.player-card .pc-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 99px;
+  color: var(--text-2);
+  background: var(--surface-hover, rgb(127 127 127 / 0.1));
+}
+.player-card .pc-tag.streak {
+  color: #ff9f0a;
+  background: color-mix(in srgb, #ff9f0a 14%, transparent);
 }
 .player-card .pstats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   width: 100%;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 0.5px solid var(--border);
+  margin-top: auto;
+  padding: 8px 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  box-shadow: inset 0 0 0 0.5px var(--border);
+}
+.player-card .pstats > div + div {
+  border-left: 0.5px solid var(--border);
 }
 .player-card .pstats b {
   display: block;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 650;
   font-variant-numeric: tabular-nums;
 }
 .player-card .pstats span {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--text-2);
 }
 .player-card .edit {
   position: absolute;
   top: 8px;
   right: 8px;
+  z-index: 1;
   opacity: 0;
   transition: opacity var(--fast);
 }
@@ -2678,9 +2703,6 @@ button {
 .dz-actions {
   display: flex;
   gap: 8px;
-}
-.player-card > *:not(.edit) {
-  position: relative;
 }
 .game-row .seats .seat-res {
   min-height: 40px;

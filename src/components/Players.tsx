@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { fmtScore, type Game, type Player } from '../lib/model';
+import { type Game, type Player } from '../lib/model';
 import { pct, playerStats, results } from '../lib/stats';
 import { deletePlayer, savePlayer, uid } from '../lib/store';
 import { toast } from '../lib/toast';
@@ -48,9 +48,11 @@ export function Players({ players, games, onAdd }: { players: Player[]; games: G
               </button>
               <Avatar player={p} />
               <div className="pname">{p.name}</div>
-              <div className="muted" style={{ fontSize: 12 }}>
-                {s?.streak && s.streak >= 2 ? `🔥 ${s.streak} მოგება ზედიზედ` : s?.games ? `რეკორდი ${fmtScore(s.best)}` : 'ჯერ არ უთამაშია'}
-              </div>
+              {s?.streak && s.streak >= 2 ? (
+                <span className="pc-tag streak">🔥 {s.streak} მოგება ზედიზედ</span>
+              ) : !s?.games ? (
+                <span className="pc-tag">ჯერ არ უთამაშია</span>
+              ) : null}
               <div className="pstats">
                 <div>
                   <b>{s?.wins ?? 0}</b>
