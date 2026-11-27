@@ -6,13 +6,10 @@ import { cx, dayLabel, timeLabel } from '../lib/util';
 import { Chevron, Plus } from './Icons';
 import { Avatar, Empty, Kbd, pcStyle } from './ui';
 
-export function Games({ players, games, query, onLog }: { players: Player[]; games: Game[]; query: string; onLog: () => void }) {
+export function Games({ players, games, onLog }: { players: Player[]; games: Game[]; onLog: () => void }) {
   const pm = useMemo(() => playerMap(players), [players]);
   const groups = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const sorted = [...games]
-      .filter((g) => !q || g.playerIds.some((id) => pm.get(id)?.name.toLowerCase().includes(q)))
-      .sort((a, b) => b.playedAt.localeCompare(a.playedAt));
+    const sorted = [...games].sort((a, b) => b.playedAt.localeCompare(a.playedAt));
     const out: { label: string; games: Game[] }[] = [];
     for (const g of sorted) {
       const label = dayLabel(new Date(g.playedAt).getTime());
@@ -21,7 +18,7 @@ export function Games({ players, games, query, onLog }: { players: Player[]; gam
       else out.push({ label, games: [g] });
     }
     return out;
-  }, [games, pm, query]);
+  }, [games]);
 
   if (!games.length)
     return (
@@ -36,8 +33,6 @@ export function Games({ players, games, query, onLog }: { players: Player[]; gam
         }
       />
     );
-
-  if (!groups.length) return <Empty art="🔍" title="ვერაფერი მოიძებნა" text={`„${query}“ არცერთ თამაშში არ მონაწილეობდა.`} />;
 
   let n = 0;
   return (

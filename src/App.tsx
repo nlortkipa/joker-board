@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CommandPalette } from './components/CommandPalette';
 import { Toasts } from './components/Feedback';
 import { GameResult, gameTitle, shareGame } from './components/GameResult';
 import { Games } from './components/Games';
-import { Back, Cards, Gear, People, Plus, Search, Share, Trophy } from './components/Icons';
+import { Back, Cards, Gear, People, Plus, Share, Trophy } from './components/Icons';
 import { Leaderboard } from './components/Leaderboard';
 import { LogGame } from './components/LogGame';
 import { PlayerEditor, Players, newPlayer } from './components/Players';
@@ -29,9 +29,7 @@ export default function App() {
   const prefs = usePrefs();
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [period, setPeriod] = useState<Period>('all');
-  const [query, setQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
-  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => startSync(), []);
 
@@ -80,11 +78,7 @@ export default function App() {
       else if (c === 'KeyS') setOverlay({ kind: 'settings' });
       else if (c === 'KeyE' && game) openLog({ edit: game });
       else if (e.key === '?') setOverlay({ kind: 'shortcuts' });
-      else if (c === 'Slash') {
-        e.preventDefault();
-        go('/games');
-        setTimeout(() => searchRef.current?.focus(), 50);
-      } else if (e.key === 'Escape' && route.name === 'game') go('/games');
+      else if (e.key === 'Escape' && route.name === 'game') go('/games');
       else if (c === 'Digit1') go('/leaderboard');
       else if (c === 'Digit2') go('/games');
       else if (c === 'Digit3') go('/players');
@@ -121,11 +115,6 @@ export default function App() {
       <Plus /> თამაშის ჩაწერა <Kbd k="N" />
     </button>
   );
-  const searchPill = (
-    <button className="search-pill" onClick={() => setOverlay({ kind: 'palette' })}>
-      <Search size={14} /> <span className="lbl">ძებნა</span> <Kbd k="Mod K" />
-    </button>
-  );
   const periodPicker = (
     <Segmented<Period> label="პერიოდი" value={period} onChange={setPeriod} options={PERIODS.map((p) => ({ id: p.id, label: p.label }))} />
   );
@@ -136,7 +125,6 @@ export default function App() {
     right = (
       <>
         {games.length > 0 && <span className="hide-mobile">{periodPicker}</span>}
-        {searchPill}
         {logBtn}
       </>
     );
@@ -144,35 +132,12 @@ export default function App() {
     content = <Leaderboard players={players} games={games} period={period} onLog={() => openLog()} />;
   } else if (route.name === 'games') {
     title = 'თამაშები';
-    right = (
-      <>
-        {searchPill}
-        {logBtn}
-      </>
-    );
-    content = (
-      <>
-        {games.length > 0 && (
-          <div className="search-field">
-            <Search size={15} />
-            <input
-              ref={searchRef}
-              type="search"
-              placeholder="გაფილტრე მოთამაშით…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Escape' && (setQuery(''), e.currentTarget.blur())}
-            />
-          </div>
-        )}
-        <Games players={players} games={games} query={query} onLog={() => openLog()} />
-      </>
-    );
+    right = logBtn;
+    content = <Games players={players} games={games} onLog={() => openLog()} />;
   } else if (route.name === 'players') {
     title = 'მოთამაშეები';
     right = (
       <>
-        {searchPill}
         <button className="btn primary hide-mobile" onClick={() => setOverlay({ kind: 'player' })}>
           <Plus /> მოთამაშის დამატება <Kbd k="P" />
         </button>
@@ -295,9 +260,6 @@ export default function App() {
                 </span>
                 <h1>{title}</h1>
               </div>
-              <button className="mh-action" onClick={() => setOverlay({ kind: 'palette' })} aria-label="ძებნა">
-                <Search size={18} />
-              </button>
             </div>
             {mobileExtra}
           </div>

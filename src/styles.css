@@ -553,31 +553,6 @@ button {
   border: 0.5px solid rgba(128, 128, 128, 0.22);
   opacity: 0.7;
 }
-.search-pill {
-  display: flex;
-  align-items: center;
-  flex: none;
-  gap: 8px;
-  height: 30px;
-  width: 200px;
-  padding: 0 6px 0 10px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--bg-elev) 70%, transparent);
-  box-shadow: var(--shadow-sm);
-  color: var(--text-3);
-  cursor: pointer;
-  transition:
-    background var(--fast),
-    color var(--fast),
-    width var(--normal) var(--ease-out);
-}
-.search-pill:hover {
-  background: var(--bg-elev);
-  color: var(--accent-text);
-}
-.search-pill .kbd {
-  margin-left: auto;
-}
 .segmented {
   display: inline-flex;
   flex: none;
@@ -2287,18 +2262,6 @@ button {
   }
 }
 
-@media (max-width: 1180px) {
-  .search-pill {
-    width: 30px;
-    padding: 0;
-    justify-content: center;
-  }
-  .search-pill .lbl,
-  .search-pill .kbd {
-    display: none;
-  }
-}
-
 @media (max-width: 960px) {
   .table .hide-md {
     display: none;
@@ -2313,7 +2276,6 @@ button {
     display: block;
   }
   .sidebar,
-  .topbar .search-pill,
   .topbar .hide-mobile,
   .hide-mobile {
     display: none;
@@ -2424,25 +2386,6 @@ button {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .mh-action {
-    flex: none;
-    width: 38px;
-    height: 38px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: var(--text-2);
-    background: var(--bg-elev);
-    box-shadow: var(--shadow-sm);
-    -webkit-tap-highlight-color: transparent;
-    transition:
-      transform var(--fast) var(--ease-spring),
-      color var(--fast);
-  }
-  .mh-action:active {
-    transform: scale(0.9);
-    color: var(--accent-text);
   }
   .mh-extra {
     margin-top: 14px;
@@ -2727,30 +2670,6 @@ button {
   .show-touch {
     display: inline-flex;
   }
-}
-.search-field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 40px;
-  padding: 0 14px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  background: var(--bg-elev);
-  box-shadow: var(--shadow-sm);
-  color: var(--text-3);
-  transition: box-shadow var(--fast);
-}
-.search-field:focus-within {
-  box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-sm);
-}
-.search-field input {
-  flex: 1;
-  border: 0;
-  outline: none;
-  background: transparent;
-  font-size: 14px;
-  color: var(--text);
 }
 .dz-actions {
   display: flex;
