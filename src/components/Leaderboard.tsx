@@ -1,73 +1,10 @@
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
+import { useMemo, type CSSProperties } from 'react';
 import { fmtScore, type Game, type Player } from '../lib/model';
 import { pct, playerStats, results, type Period, type PlayerStats } from '../lib/stats';
 import { cx, weekdayNarrow } from '../lib/util';
-import { Chevron, Plus } from './Icons';
+import { Plus } from './Icons';
 import { RaceChart } from './RaceChart';
-import { Avatar, Empty, Kbd, Modal, pcStyle } from './ui';
-
-const NARROW = '(max-width: 860px)';
-function useNarrow() {
-  const [narrow, setNarrow] = useState(() => matchMedia(NARROW).matches);
-  useEffect(() => {
-    const mq = matchMedia(NARROW);
-    const on = () => setNarrow(mq.matches);
-    mq.addEventListener('change', on);
-    return () => mq.removeEventListener('change', on);
-  }, []);
-  return narrow;
-}
-
-const fmtPlace = (n: number) => n.toFixed(2).replace('.', ',');
-
-function Form({ form }: { form: number[] }) {
-  return (
-    <span className="form" aria-label={`ბოლო ადგილები: ${form.join(', ')}`}>
-      {form.map((pl, k) => (
-        <i key={k} className={cx(`p${Math.min(pl, 4)}`, pl === 1 && 'w')}>
-          {pl}
-        </i>
-      ))}
-    </span>
-  );
-}
-
-function PlayerSheet({ s, rank, onClose }: { s: PlayerStats; rank: number; onClose: () => void }) {
-  const rows: [string, ReactNode][] = [
-    ['თამაში', s.games],
-    ['მოგება', <b key="w">{s.wins}</b>],
-    ['მოგების %', pct(s.winRate)],
-    ['საშ. ადგილი', fmtPlace(s.avgPlace)],
-    ['საშ. ქულა', fmtScore(Math.round(s.avgScore))],
-    ['რეკორდი', fmtScore(s.best)],
-    ['ყველაზე გრძელი სერია', s.longest],
-    ['ფორმა', <Form key="f" form={s.form} />],
-  ];
-  return (
-    <Modal
-      onClose={onClose}
-      title={
-        <span className="who-cell" style={pcStyle(s.player)}>
-          <span className={cx('rank', rank < 3 && `r${rank + 1}`)}>{rank < 3 ? ['🥇', '🥈', '🥉'][rank] : rank + 1}</span>
-          <Avatar player={s.player} size={30} />
-          <span>
-            {s.player.name}
-            {s.streak >= 2 && <span className="streak"> 🔥{s.streak}</span>}
-          </span>
-        </span>
-      }
-    >
-      <dl className="stat-list" style={pcStyle(s.player)}>
-        {rows.map(([k, v]) => (
-          <div key={k}>
-            <dt>{k}</dt>
-            <dd>{v}</dd>
-          </div>
-        ))}
-      </dl>
-    </Modal>
-  );
-}
+import { Avatar, Empty, Kbd, pcStyle } from './ui';
 
 const STAGE_TITLE: Record<Period, string> = {
   week: 'კვირის ჩემპიონი',
@@ -91,9 +28,6 @@ export function Leaderboard({
   const all = useMemo(() => results(games, 'all'), [games]);
   const stats = useMemo(() => playerStats(players, res), [players, res]);
   const ranked = stats.filter((s) => s.games > 0);
-  const narrow = useNarrow();
-  const [openId, setOpenId] = useState<string | null>(null);
-  const openIdx = ranked.findIndex((s) => s.player.id === openId);
 
   if (all.length === 0) {
     return (
@@ -215,27 +149,18 @@ export function Leaderboard({
           <thead>
             <tr>
               <th>მოთამაშე</th>
-              <th className="hide-sm">თამაში</th>
               <th>მოგება</th>
+              <th className="hide-sm">თამაში</th>
               <th>მოგების %</th>
               <th className="hide-sm">საშ. ადგილი</th>
               <th className="hide-md hide-sm">საშ. ქულა</th>
               <th className="hide-md hide-sm">რეკორდი</th>
               <th className="hide-sm">ფორმა</th>
-              <th className="show-sm" aria-hidden />
             </tr>
           </thead>
           <tbody>
             {ranked.map((s, i) => (
-              <tr
-                key={s.player.id}
-                className={cx(i < 3 && `top${i + 1}`, narrow && 'tappable')}
-                style={{ ...pcStyle(s.player), animationDelay: `${i * 40}ms` }}
-                onClick={narrow ? () => setOpenId(s.player.id) : undefined}
-                onKeyDown={narrow ? (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), setOpenId(s.player.id)) : undefined}
-                tabIndex={narrow ? 0 : undefined}
-                role={narrow ? 'button' : undefined}
-              >
+              <tr key={s.player.id} className={i < 3 ? `top${i + 1}` : undefined} style={{ ...pcStyle(s.player), animationDelay: `${i * 40}ms` }}>
                 <td>
                   <div className="who-cell">
                     <span className={cx('rank', i < 3 && `r${i + 1}`)}>{i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</span>
@@ -246,26 +171,33 @@ export function Leaderboard({
                     </span>
                   </div>
                 </td>
-                <td className="hide-sm">{s.games}</td>
                 <td>
                   <b>{s.wins}</b>
                 </td>
-                <td>{pct(s.winRate)}</td>
-                <td className="hide-sm">{fmtPlace(s.avgPlace)}</td>
+                <td className="hide-sm">{s.games}</td>
+                <td>
+                  <span className="bar hide-sm">
+                    <i style={{ width: pct(s.winRate) }} />
+                  </span>
+                  {pct(s.winRate)}
+                </td>
+                <td className="hide-sm">{s.avgPlace.toFixed(2).replace('.', ',')}</td>
                 <td className="hide-md hide-sm">{fmtScore(Math.round(s.avgScore))}</td>
                 <td className="hide-md hide-sm">{fmtScore(s.best)}</td>
                 <td className="hide-sm">
-                  <Form form={s.form} />
-                </td>
-                <td className="show-sm row-chev">
-                  <Chevron size={14} />
+                  <span className="form" aria-label={`ბოლო ადგილები: ${s.form.join(', ')}`}>
+                    {s.form.map((pl, k) => (
+                      <i key={k} className={cx(`p${Math.min(pl, 4)}`, pl === 1 && 'w')}>
+                        {pl}
+                      </i>
+                    ))}
+                  </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      {openIdx >= 0 && <PlayerSheet s={ranked[openIdx]} rank={openIdx} onClose={() => setOpenId(null)} />}
 
       {res.length > 1 && (
         <>
