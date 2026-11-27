@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { CommandPalette } from './components/CommandPalette';
 import { Toasts } from './components/Feedback';
 import { GameResult, gameTitle, shareGame } from './components/GameResult';
 import { Games } from './components/Games';
@@ -21,7 +20,7 @@ import { cx, dayLabel, isTyping } from './lib/util';
 type Overlay =
   | null
   | { kind: 'log'; edit?: Game; seed?: string[] }
-  | { kind: 'player' | 'settings' | 'palette' | 'shortcuts' | 'onboarding' | 'delete' };
+  | { kind: 'player' | 'settings' | 'shortcuts' | 'onboarding' | 'delete' };
 
 export default function App() {
   const { players, games, loaded, offline } = useStore();
@@ -46,24 +45,9 @@ export default function App() {
     setOverlay({ kind: 'log', ...extra });
   }, []);
 
-  const actions = useMemo(
-    () => ({
-      log: () => openLog(),
-      newPlayer: () => setOverlay({ kind: 'player' }),
-      settings: () => setOverlay({ kind: 'settings' }),
-      shortcuts: () => setOverlay({ kind: 'shortcuts' }),
-    }),
-    [openLog],
-  );
-
   // Global keyboard shortcuts. Letters use e.code so they work on a Georgian layout too.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.code === 'KeyK') {
-        e.preventDefault();
-        setOverlay((o) => (o?.kind === 'palette' ? null : o ?? { kind: 'palette' }));
-        return;
-      }
       if (overlay?.kind === 'onboarding' && e.code === 'KeyN') {
         e.preventDefault();
         openLog();
@@ -295,9 +279,6 @@ export default function App() {
       )}
       {overlay?.kind === 'settings' && <Settings players={players} games={games} onClose={() => setOverlay(null)} />}
       {overlay?.kind === 'shortcuts' && <Shortcuts onClose={() => setOverlay(null)} />}
-      {overlay?.kind === 'palette' && (
-        <CommandPalette players={players} games={games} actions={actions} onClose={() => setOverlay(null)} />
-      )}
       {overlay?.kind === 'onboarding' && (
         <Onboarding
           onClose={() => {

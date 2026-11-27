@@ -1,7 +1,6 @@
 import { Kbd, Modal } from './ui';
 
 export const SHORTCUTS: [string[], string][] = [
-  [['Mod', 'K'], 'ბრძანებების პალიტრა'],
   [['N'], 'თამაშის ჩაწერა'],
   [['P'], 'მოთამაშის დამატება'],
   [['1'], 'რეიტინგი'],

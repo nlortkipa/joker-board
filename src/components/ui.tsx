@@ -73,16 +73,12 @@ export function Modal({
   children,
   footer,
   wide,
-  bare,
-  top,
 }: {
   title?: ReactNode;
   onClose: () => void;
   children: ReactNode;
   footer?: ReactNode;
   wide?: boolean;
-  bare?: boolean;
-  top?: boolean;
 }) {
   const [closing, setClosing] = useState(false);
   const close = useRef(() => {});
@@ -103,11 +99,11 @@ export function Modal({
   }, []);
   return createPortal(
     <div
-      className={cx('overlay', closing && 'closing', top && 'top')}
+      className={cx('overlay', closing && 'closing')}
       onMouseDown={(e) => e.target === e.currentTarget && close.current()}
     >
-      <div className={cx(bare ? 'palette' : 'modal', wide && 'wide')} role="dialog" aria-modal aria-label={typeof title === 'string' ? title : undefined}>
-        {!bare && <div className="grabber" />}
+      <div className={cx('modal', wide && 'wide')} role="dialog" aria-modal aria-label={typeof title === 'string' ? title : undefined}>
+        <div className="grabber" />
         {title && (
           <div className="modal-head">
             <h2>{title}</h2>
@@ -116,7 +112,7 @@ export function Modal({
             </button>
           </div>
         )}
-        {bare ? children : <div className="modal-body">{children}</div>}
+        <div className="modal-body">{children}</div>
         {footer && <div className="modal-foot">{footer}</div>}
       </div>
     </div>,
