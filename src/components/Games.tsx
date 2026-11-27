@@ -6,17 +6,19 @@ import { cx, dayLabel, timeLabel } from '../lib/util';
 import { Chevron, Plus } from './Icons';
 import { Avatar, Empty, pcStyle } from './ui';
 
+const countLabel = (n: number) => `${n} თამაში`;
+
 export function Games({ players, games, onLog }: { players: Player[]; games: Game[]; onLog: () => void }) {
   const pm = useMemo(() => playerMap(players), [players]);
   const groups = useMemo(() => {
     const sorted = [...games].sort((a, b) => b.playedAt.localeCompare(a.playedAt));
     const out: { label: string; games: Game[] }[] = [];
-    for (const g of sorted) {
+    sorted.forEach((g) => {
       const label = dayLabel(new Date(g.playedAt).getTime());
       const last = out[out.length - 1];
       if (last?.label === label) last.games.push(g);
       else out.push({ label, games: [g] });
-    }
+    });
     return out;
   }, [games]);
 
@@ -38,44 +40,44 @@ export function Games({ players, games, onLog }: { players: Player[]; games: Gam
   return (
     <>
       {groups.map((grp) => (
-        <div className="game-group" key={grp.label}>
-          <h4>{grp.label}</h4>
-          {grp.games.map((g) => {
-            const places = placesOf(g.scores);
-            const order = g.playerIds.map((_, s) => s).sort((a, b) => places[a] - places[b]);
-            return (
-              <button
-                key={g.id}
-                className="card game-row"
-                style={{ ...pcStyle(pm.get(g.playerIds[order[0]]) ?? UNKNOWN), animationDelay: `${Math.min(n++, 12) * 30}ms` }}
-                onClick={() => go(`/games/${g.id}`)}
-              >
-                <div className="meta">
-                  <b>{timeLabel(g.playedAt)}</b>
-                </div>
-                <div className="seats">
-                  {order.map((s) => {
-                    const p = pm.get(g.playerIds[s]) ?? UNKNOWN;
-                    const win = places[s] === 1;
-                    return (
-                      <div key={s} className={cx('seat-res', win && 'win')} style={pcStyle(p)}>
-                        <Avatar player={p} />
-                        <div className="n">
-                          <div>{p.name}</div>
-                          <span className="num">
-                            {win ? '🏆 ' : ''}
-                            {fmtScore(g.scores[s])}
-                          </span>
+        <section className="game-group" key={grp.label}>
+          <header className="game-group-head">
+            <h4>{grp.label}</h4>
+            <span>{countLabel(grp.games.length)}</span>
+          </header>
+          <div className="game-list">
+            {grp.games.map((g) => {
+              const places = placesOf(g.scores);
+              const order = g.playerIds.map((_, s) => s).sort((a, b) => places[a] - places[b] || g.scores[b] - g.scores[a]);
+              const winner = pm.get(g.playerIds[order[0]]) ?? UNKNOWN;
+              return (
+                <button
+                  key={g.id}
+                  className="game-row"
+                  style={{ ...pcStyle(winner), animationDelay: `${Math.min(n++, 12) * 30}ms` }}
+                  onClick={() => go(`/games/${g.id}`)}
+                >
+                  <b className="gr-time num">{timeLabel(g.playedAt)}</b>
+                  <div className="gr-seats">
+                    {order.map((s) => {
+                      const p = pm.get(g.playerIds[s]) ?? UNKNOWN;
+                      return (
+                        <div key={s} className={cx('gr-seat', places[s] === 1 && 'win')}>
+                          <Avatar player={p} size={32} />
+                          <div className="gr-who">
+                            <div className="nm">{p.name}</div>
+                            <span className="sc num">{fmtScore(g.scores[s])}</span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <Chevron className="chev" />
-              </button>
-            );
-          })}
-        </div>
+                      );
+                    })}
+                  </div>
+                  <Chevron className="chev" />
+                </button>
+              );
+            })}
+          </div>
+        </section>
       ))}
     </>
   );
