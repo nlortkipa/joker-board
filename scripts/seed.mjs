@@ -22,11 +22,10 @@ const id = () => Math.floor(rand() * 2 ** 52).toString(36).padStart(10, '0');
 
 const now = new Date();
 const players = [
-  { name: 'ნინო', emoji: '🦊', color: 5, skill: 1620 },
-  { name: 'გიორგი', emoji: '🐻', color: 1, skill: 1480 },
-  { name: 'მარიამი', emoji: '🌻', color: 4, skill: 1540 },
-  { name: 'ლუკა', emoji: '🚀', color: 3, skill: 1380 },
-  { name: 'ბებო', emoji: '👵', color: 7, skill: 1600 },
+  { name: 'ნიკა', emoji: '🦊', color: 5, skill: 1660 },
+  { name: 'ტატო', emoji: '🐻', color: 1, skill: 1570 },
+  { name: 'ნუცა', emoji: '🌻', color: 4, skill: 1500 },
+  { name: 'დიმა', emoji: '🚀', color: 3, skill: 1400 },
 ].map((p) => ({ id: id(), createdAt: new Date(now.getTime() - 120 * 864e5).toISOString(), ...p }));
 
 const games = [];
@@ -38,8 +37,7 @@ for (let day = 95; day >= 0; day--) {
     when.setDate(when.getDate() - day);
     when.setHours(20 + k, Math.floor(rand() * 60), 0, 0);
     if (when > now) continue;
-    const out = players[Math.floor(rand() * players.length)]; // one person sits out
-    const seats = players.filter((p) => p !== out).sort(() => rand() - 0.5);
+    const seats = [...players].sort(() => rand() - 0.5);
     games.push({
       id: id(),
       createdAt: when.toISOString(),
