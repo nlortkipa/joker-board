@@ -37,7 +37,6 @@ export interface PlayerStats {
   player: Player;
   games: number;
   wins: number;
-  lasts: number;
   winRate: number;
   avgPlace: number;
   avgScore: number;
@@ -50,7 +49,7 @@ export interface PlayerStats {
 export function playerStats(players: Player[], res: Result[]): PlayerStats[] {
   return players
     .map((player) => {
-      let games = 0, wins = 0, lasts = 0, placeSum = 0, scoreSum = 0, best = -Infinity, streak = 0, longest = 0;
+      let games = 0, wins = 0, placeSum = 0, scoreSum = 0, best = -Infinity, streak = 0, longest = 0;
       const form: number[] = [];
       for (const { game, places } of res) {
         const seat = game.playerIds.indexOf(player.id);
@@ -60,7 +59,6 @@ export function playerStats(players: Player[], res: Result[]): PlayerStats[] {
         placeSum += place;
         scoreSum += game.scores[seat];
         best = Math.max(best, game.scores[seat]);
-        if (place === Math.max(...places)) lasts++;
         if (place === 1) {
           wins++;
           streak++;
@@ -72,7 +70,6 @@ export function playerStats(players: Player[], res: Result[]): PlayerStats[] {
         player,
         games,
         wins,
-        lasts,
         winRate: games ? wins / games : 0,
         avgPlace: games ? placeSum / games : 0,
         avgScore: games ? scoreSum / games : 0,

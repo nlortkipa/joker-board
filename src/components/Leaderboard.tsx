@@ -82,13 +82,13 @@ export function Leaderboard({
   const record = rec as { p: Player; score: number } | null;
   const margin = mar as { p: Player; diff: number } | null;
   const hot = top((s) => s.longest);
-  const spoon = top((s) => s.lasts);
+  const steady = [...ranked].filter((s) => s.games >= 3).sort((a, b) => b.avgScore - a.avgScore)[0];
 
   const fame = [
     hot && { emoji: '🔥', tint: '#ff7a1a', label: 'ყველაზე გრძელი სერია', p: hot.player, value: hot.longest, unit: 'მოგება ზედიზედ' },
     record && { emoji: '🚀', tint: '#2f80ff', label: 'რეკორდული ქულა', p: record.p, value: fmtScore(record.score), unit: 'ქულა' },
     margin && margin.diff > 0 && { emoji: '💥', tint: '#ff3d7f', label: 'ყველაზე დიდი სხვაობა', p: margin.p, value: fmtScore(margin.diff), unit: 'ქულით წინ' },
-    spoon && { emoji: '🥄', tint: '#12b886', label: 'ხის კოვზი', p: spoon.player, value: spoon.lasts, unit: 'ბოლო ადგილი' },
+    steady && { emoji: '🎯', tint: '#12b886', label: 'საუკეთესო საშუალო', p: steady.player, value: fmtScore(steady.avgScore), unit: 'საშუალო ქულა' },
   ].filter(Boolean) as { emoji: string; tint: string; label: string; p: Player; value: string | number; unit: string }[];
 
   // Last 14 days: who won the most games each day.
