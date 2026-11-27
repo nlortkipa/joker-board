@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { fmtScore, type Game, type Player } from '../lib/model';
 import { pct, playerStats, results } from '../lib/stats';
 import { deletePlayer, savePlayer, uid } from '../lib/store';
 import { toast } from '../lib/toast';
-import { COLOR_NAMES, cx, EMOJIS } from '../lib/util';
-import { Pencil, Plus, Trash } from './Icons';
+import { COLOR_NAMES, cx, EMOJIS, imageToAvatar } from '../lib/util';
+import { Pencil, Plus, Trash, Upload } from './Icons';
 import { Avatar, Empty, Kbd, Modal, pcStyle } from './ui';
 
 export function newPlayer(name: string, taken: Player[]): Player {
@@ -27,7 +27,7 @@ export function Players({ players, games, onAdd }: { players: Player[]; games: G
       <Empty
         art="👨‍👩‍👧‍👦"
         title="ვინ სხედან მაგიდასთან?"
-        text="დაამატე ყველა, ვინც თამაშობს. აურჩიე ემოჯი და ფერი, რომ ადვილად გამოირჩეოდნენ."
+        text="დაამატე ყველა, ვინც თამაშობს. აურჩიე ფოტო ან ემოჯი და ფერი, რომ ადვილად გამოირჩეოდნენ."
         action={
           <button className="btn primary large" onClick={onAdd}>
             <Plus /> მოთამაშის დამატება <Kbd k="P" />
@@ -100,9 +100,21 @@ export function PlayerEditor({
 }) {
   const [draft, setDraft] = useState(player);
   const [confirm, setConfirm] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
   const name = draft.name.trim();
   const dupe = players.some((p) => p.id !== draft.id && p.name.toLowerCase() === name.toLowerCase());
   const valid = name.length > 0 && name.length <= 24 && !dupe;
+
+  const pickPhoto = async (file: File | undefined) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return toast('აირჩიე სურათის ფაილი', 'error');
+    try {
+      const photo = await imageToAvatar(file);
+      setDraft((d) => ({ ...d, photo }));
+    } catch {
+      toast('სურათი ვერ წავიკითხე', 'error');
+    }
+  };
 
   const save = () => {
     if (!valid) return;
@@ -151,7 +163,22 @@ export function PlayerEditor({
       }
     >
       <div className="preview-avatar">
-        <Avatar player={draft} key={draft.emoji + draft.color} className="bump" />
+        <button className="avatar-pick" onClick={() => fileInput.current?.click()} aria-label="ფოტოს არჩევა" title="ფოტოს არჩევა">
+          <Avatar player={draft} key={(draft.photo ?? draft.emoji) + draft.color} className="bump" />
+          <span className="avatar-pick-badge">
+            <Upload size={13} />
+          </span>
+        </button>
+        <input
+          ref={fileInput}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(e) => {
+            pickPhoto(e.target.files?.[0]);
+            e.target.value = '';
+          }}
+        />
       </div>
       <label className="field">
         <span>სახელი</span>
@@ -168,9 +195,24 @@ export function PlayerEditor({
       </label>
       <div className="field">
         <span>ავატარი</span>
+        <div className="photo-actions">
+          <button className="btn" onClick={() => fileInput.current?.click()}>
+            <Upload /> {draft.photo ? 'ფოტოს შეცვლა' : 'ფოტოს ატვირთვა'}
+          </button>
+          {draft.photo && (
+            <button className="btn ghost danger" onClick={() => setDraft({ ...draft, photo: undefined })}>
+              <Trash /> ფოტოს მოშორება
+            </button>
+          )}
+        </div>
         <div className="emoji-grid">
           {EMOJIS.map((e) => (
-            <button key={e} className={cx(draft.emoji === e && 'on')} onClick={() => setDraft({ ...draft, emoji: e })} aria-label={e}>
+            <button
+              key={e}
+              className={cx(!draft.photo && draft.emoji === e && 'on')}
+              onClick={() => setDraft({ ...draft, emoji: e, photo: undefined })}
+              aria-label={e}
+            >
               {e}
             </button>
           ))}

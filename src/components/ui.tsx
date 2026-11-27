@@ -11,7 +11,7 @@ export function Avatar({ player, size, className, children }: { player: Player; 
   const style = { ...pcStyle(player), ...(size ? { '--size': `${size}px` } : {}) } as CSSProperties;
   return (
     <span className={cx('avatar', className)} style={style} title={player.name} aria-hidden>
-      <span className="em">{player.emoji}</span>
+      {player.photo ? <img className="photo" src={player.photo} alt="" draggable={false} /> : <span className="em">{player.emoji}</span>}
       {children}
     </span>
   );

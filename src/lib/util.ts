@@ -55,4 +55,19 @@ export const EMOJIS = [
   '👑', '🎩', '🎯', '🎲', '🚀', '💎', '🧠', '😎', '🤠', '🥷', '🧙', '👵',
 ];
 
+/** Center-crops an image file to a square and downsizes it to a small data URL. */
+export async function imageToAvatar(file: Blob, size = 256): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  const side = Math.min(bitmap.width, bitmap.height);
+  const out = Math.min(size, side);
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = out;
+  const ctx = canvas.getContext('2d')!;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, out, out);
+  bitmap.close();
+  const webp = canvas.toDataURL('image/webp', 0.85);
+  return webp.startsWith('data:image/webp') ? webp : canvas.toDataURL('image/jpeg', 0.85);
+}
+
 export const COLOR_NAMES = ['', 'ლურჯი', 'ნარინჯისფერი', 'ზღვისფერი', 'ყვითელი', 'ვარდისფერი', 'მწვანე', 'იისფერი', 'წითელი'];

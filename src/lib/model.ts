@@ -5,6 +5,7 @@ export interface Player {
   id: string;
   name: string;
   emoji: string;
+  photo?: string; // optional square image as a data: URL; emoji is the fallback
   color: number; // 1..8 palette slot
   createdAt: string;
 }

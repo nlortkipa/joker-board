@@ -62,7 +62,10 @@ export function createApi({ dataDir = 'data' } = {}) {
       req.on('error', reject);
     });
 
-  const isPlayer = (p) => p && typeof p === 'object' && ID.test(p.id) && typeof p.name === 'string';
+  const MAX_PHOTO = 400 * 1024;
+  const isPhoto = (v) =>
+    v === undefined || (typeof v === 'string' && v.length <= MAX_PHOTO && /^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+/=]+$/.test(v));
+  const isPlayer = (p) => p && typeof p === 'object' && ID.test(p.id) && typeof p.name === 'string' && isPhoto(p.photo);
   const isGame = (g) =>
     g &&
     typeof g === 'object' &&

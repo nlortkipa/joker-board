@@ -642,6 +642,14 @@ button {
 .avatar .em {
   transform: translateY(1%);
 }
+.avatar .photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
 .dot {
   width: 8px;
   height: 8px;
@@ -1946,6 +1954,37 @@ button {
 }
 .preview-avatar .avatar {
   --size: 76px;
+}
+.avatar-pick {
+  position: relative;
+  border-radius: 50%;
+}
+.avatar-pick:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.avatar-pick-badge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg-elev);
+  transition: transform var(--fast) var(--ease-spring);
+}
+.avatar-pick:hover .avatar-pick-badge {
+  transform: scale(1.1);
+}
+.photo-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 
 /* Settings */
