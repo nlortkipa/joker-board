@@ -1042,6 +1042,53 @@ button {
 .table tbody tr:hover {
   background: color-mix(in srgb, var(--pc, var(--accent)) 10%, transparent);
 }
+.table .show-sm {
+  display: none;
+}
+.table tbody tr.tappable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.table tbody tr.tappable:active {
+  background: color-mix(in srgb, var(--pc, var(--accent)) 16%, transparent);
+}
+.table td.row-chev {
+  width: 1%;
+  padding-left: 0;
+  color: var(--text-3);
+}
+.table td.row-chev svg {
+  display: block;
+  margin-left: auto;
+}
+.stat-list {
+  margin: 0;
+  display: grid;
+}
+.stat-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  border-bottom: 0.5px solid var(--border);
+}
+.stat-list > div:last-child {
+  border-bottom: 0;
+}
+.stat-list dt {
+  color: var(--text-2);
+  font-size: 14px;
+}
+.stat-list dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.stat-list dd b {
+  font-weight: 700;
+  color: color-mix(in srgb, var(--pc, var(--text)) 45%, var(--text));
+}
 .table td b {
   font-weight: 700;
   color: color-mix(in srgb, var(--pc, var(--text)) 45%, var(--text));
@@ -2216,7 +2263,8 @@ button {
 }
 
 /* Mobile tab bar & header */
-.mobile-head {
+.mobile-head,
+.bar-logo {
   display: none;
 }
 .tabbar {
@@ -2278,8 +2326,20 @@ button {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
-  .topbar.is-root h1 {
+  .topbar.is-root h1,
+  .topbar.is-root .bar-logo {
     opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity var(--fast),
+      transform var(--normal) var(--ease-out);
+  }
+  .topbar .bar-logo {
+    display: block;
+    width: 26px;
+    height: 26px;
+    margin-right: -2px;
+    filter: drop-shadow(0 2px 6px rgba(109, 74, 255, 0.35));
   }
   .topbar.is-root.scrolled {
     border-bottom-color: var(--border);
@@ -2287,20 +2347,99 @@ button {
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
   }
-  .topbar.is-root.scrolled h1 {
+  .topbar.is-root.scrolled h1,
+  .topbar.is-root.scrolled .bar-logo {
     opacity: 1;
+    transform: none;
+  }
+  /* Root pages: the bar overlays the large header until you scroll. */
+  .topbar.is-root {
+    margin-bottom: calc(-50px - var(--safe-t));
+  }
+  .topbar.is-root:not(.scrolled) {
+    pointer-events: none;
   }
   .mobile-head {
     display: block;
-    padding: 0 16px 4px;
+    padding: calc(18px + var(--safe-t)) 16px 4px;
+  }
+  .mh-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mh-brand {
+    flex: none;
+    border-radius: 13px;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--normal) var(--ease-spring);
+  }
+  .mh-brand:active {
+    transform: rotate(-8deg) scale(0.94);
+  }
+  .mh-brand img {
+    display: block;
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 6px 14px rgba(109, 74, 255, 0.4));
+  }
+  .mh-titles {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .mh-eyebrow {
+    font-family: var(--font-display);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--accent-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    width: fit-content;
+  }
+  .mh-eyebrow.offline {
+    background: none;
+    color: var(--bad);
+    letter-spacing: 0;
+    text-transform: none;
   }
   .mobile-head h1 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: 30px;
-    line-height: 40px;
+    font-size: 28px;
+    line-height: 36px;
     font-weight: 800;
     letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mh-action {
+    flex: none;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--text-2);
+    background: var(--bg-elev);
+    box-shadow: var(--shadow-sm);
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform var(--fast) var(--ease-spring),
+      color var(--fast);
+  }
+  .mh-action:active {
+    transform: scale(0.9);
+    color: var(--accent-text);
+  }
+  .mh-extra {
+    margin-top: 14px;
   }
   .page {
     padding: 14px 16px calc(104px + var(--safe-b));
@@ -2423,6 +2562,9 @@ button {
   }
   .table .hide-sm {
     display: none;
+  }
+  .table .show-sm {
+    display: table-cell;
   }
   .table td,
   .table th {

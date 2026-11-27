@@ -140,7 +140,7 @@ export default function App() {
         {logBtn}
       </>
     );
-    mobileExtra = games.length > 0 ? <div style={{ marginTop: 10 }}>{periodPicker}</div> : null;
+    mobileExtra = games.length > 0 ? <div className="mh-extra">{periodPicker}</div> : null;
     content = <Leaderboard players={players} games={games} period={period} onLog={() => openLog()} />;
   } else if (route.name === 'games') {
     title = 'თამაშები';
@@ -278,13 +278,27 @@ export default function App() {
               <Back />
             </button>
           )}
+          {isRoot && <img className="bar-logo" src="/logo.svg" alt="" />}
           <h1>{title}</h1>
           <span className="spacer" />
           {right}
         </header>
         {isRoot && (
           <div className="mobile-head">
-            <h1>{title}</h1>
+            <div className="mh-row">
+              <button className="mh-brand" onClick={() => go('/leaderboard')} aria-label="Joker Board">
+                <img src="/logo.svg" alt="" />
+              </button>
+              <div className="mh-titles">
+                <span className={cx('mh-eyebrow', offline && 'offline')}>
+                  {offline ? '⚠︎ კავშირი არ არის' : 'Joker Board'}
+                </span>
+                <h1>{title}</h1>
+              </div>
+              <button className="mh-action" onClick={() => setOverlay({ kind: 'palette' })} aria-label="ძებნა">
+                <Search size={18} />
+              </button>
+            </div>
             {mobileExtra}
           </div>
         )}
