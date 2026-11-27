@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import type { Player } from '../lib/model';
 import { cx, MOD } from '../lib/util';
@@ -100,7 +101,7 @@ export function Modal({
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
   }, []);
-  return (
+  return createPortal(
     <div
       className={cx('overlay', closing && 'closing', top && 'top')}
       onMouseDown={(e) => e.target === e.currentTarget && close.current()}
@@ -118,7 +119,8 @@ export function Modal({
         {bare ? children : <div className="modal-body">{children}</div>}
         {footer && <div className="modal-foot">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

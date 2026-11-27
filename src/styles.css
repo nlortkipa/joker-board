@@ -1028,7 +1028,13 @@ button {
 }
 .table tbody tr {
   transition: background var(--fast);
-  animation: page-in var(--slow) var(--ease-out) both;
+  animation: row-in var(--slow) var(--ease-out) both;
+}
+/* Fade only: a translate would poke out of the scroll container and flash a scrollbar. */
+@keyframes row-in {
+  from {
+    opacity: 0;
+  }
 }
 .table tbody tr.top1 {
   background: linear-gradient(90deg, var(--gold-soft), transparent 55%);
@@ -1041,6 +1047,53 @@ button {
 }
 .table tbody tr:hover {
   background: color-mix(in srgb, var(--pc, var(--accent)) 10%, transparent);
+}
+.table .show-sm {
+  display: none;
+}
+.table tbody tr.tappable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.table tbody tr.tappable:active {
+  background: color-mix(in srgb, var(--pc, var(--accent)) 16%, transparent);
+}
+.table td.row-chev {
+  width: 1%;
+  padding-left: 0;
+  color: var(--text-3);
+}
+.table td.row-chev svg {
+  display: block;
+  margin-left: auto;
+}
+.stat-list {
+  margin: 0;
+  display: grid;
+}
+.stat-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  border-bottom: 0.5px solid var(--border);
+}
+.stat-list > div:last-child {
+  border-bottom: 0;
+}
+.stat-list dt {
+  color: var(--text-2);
+  font-size: 14px;
+}
+.stat-list dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.stat-list dd b {
+  font-weight: 700;
+  color: color-mix(in srgb, var(--pc, var(--text)) 45%, var(--text));
 }
 .table td b {
   font-weight: 700;
@@ -2515,6 +2568,9 @@ button {
   }
   .table .hide-sm {
     display: none;
+  }
+  .table .show-sm {
+    display: table-cell;
   }
   .table td,
   .table th {
