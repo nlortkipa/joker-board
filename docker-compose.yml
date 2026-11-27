@@ -1,14 +1,30 @@
 services:
   joker-board:
-    build: .
+    # Built and published by .github/workflows/docker.yml on every push to main.
+    # To build locally instead, replace `image:` with `build: .`
+    image: ghcr.io/nlortkipa/joker-board:latest
     container_name: joker-board
     ports:
       - "3000:3000"
     volumes:
       - joker-data:/data
+    # Optional password protection (user:password)
+    # environment:
+    #   BASIC_AUTH: "family:change-me"
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    restart: unless-stopped
+
+  # Checks GHCR every 5 minutes and restarts joker-board when a new image appears.
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: joker-board-watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      # Optional password protection (user:password)
-      # BASIC_AUTH: "family:change-me"
+      WATCHTOWER_LABEL_ENABLE: "true"
+      WATCHTOWER_POLL_INTERVAL: "300"
+      WATCHTOWER_CLEANUP: "true"
     restart: unless-stopped
 
 volumes:

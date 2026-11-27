@@ -23,7 +23,7 @@ My family plays Joker, the Georgian card game, every single day. After every gam
 
 ## Self-hosting
 
-**With Docker** (recommended):
+**With Docker** (recommended), e.g. on a NAS:
 
 ```bash
 git clone https://github.com/nlortkipa/joker-board.git
@@ -34,6 +34,8 @@ docker compose up -d
 Open **http://localhost:3000**, or `http://<your-LAN-IP>:3000` from any phone or laptop on the same network, and you're done. Your data lives in the `joker-data` volume.
 
 To put a password on it, uncomment `BASIC_AUTH` in [`docker-compose.yml`](docker-compose.yml).
+
+**Automatic updates:** every push to `main` builds a new image (amd64 + arm64) and publishes it to `ghcr.io/nlortkipa/joker-board:latest`. The bundled Watchtower container checks for a new image every 5 minutes and restarts the app with it. Your data volume is kept. To update right away: `docker compose pull && docker compose up -d`.
 
 **Without Docker** (Node.js 20+):
 
