@@ -134,11 +134,13 @@ export function Leaderboard({
 
   let rec: { p: Player; score: number } | null = null;
   let mar: { p: Player; diff: number } | null = null;
+  let low: { p: Player; score: number } | null = null;
   for (const { game, places } of res) {
     game.scores.forEach((score, s) => {
       const p = players.find((x) => x.id === game.playerIds[s]);
       if (!p) return;
       if (!rec || score > rec.score) rec = { p, score };
+      if (!low || score < low.score) low = { p, score };
       if (places[s] === 1) {
         const second = Math.max(...game.scores.filter((_, i) => i !== s));
         if (!mar || score - second > mar.diff) mar = { p, diff: score - second };
@@ -148,13 +150,13 @@ export function Leaderboard({
   const record = rec as { p: Player; score: number } | null;
   const margin = mar as { p: Player; diff: number } | null;
   const hot = top((s) => s.longest);
-  const steady = [...ranked].filter((s) => s.games >= 3).sort((a, b) => b.avgScore - a.avgScore)[0];
+  const lowest = low as { p: Player; score: number } | null;
 
   const fame = [
     hot && { emoji: '🔥', tint: '#ff7a1a', label: 'ყველაზე გრძელი სერია', p: hot.player, value: hot.longest, unit: 'მოგება ზედიზედ' },
     record && { emoji: '🚀', tint: '#2f80ff', label: 'რეკორდული ქულა', p: record.p, value: fmtScore(record.score), unit: 'ქულა' },
     margin && margin.diff > 0 && { emoji: '💥', tint: '#ff3d7f', label: 'ყველაზე დიდი სხვაობა', p: margin.p, value: fmtScore(margin.diff), unit: 'ქულით წინ' },
-    steady && { emoji: '🎯', tint: '#12b886', label: 'საუკეთესო საშუალო', p: steady.player, value: fmtScore(steady.avgScore), unit: 'საშუალო ქულა' },
+    lowest && { emoji: '💀', tint: '#12b886', label: 'ყველაზე დაბალი ქულა', p: lowest.p, value: fmtScore(lowest.score), unit: 'ქულა' },
   ].filter(Boolean) as { emoji: string; tint: string; label: string; p: Player; value: string | number; unit: string }[];
 
   // Last 14 days: who won the most games each day.
