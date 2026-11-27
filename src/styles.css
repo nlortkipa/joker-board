@@ -514,14 +514,6 @@ button {
 .btn.block {
   width: 100%;
 }
-.btn .kbd {
-  margin-left: 2px;
-}
-.btn.primary .kbd {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.2);
-  opacity: 0.85;
-}
 .icon-btn {
   width: 28px;
   height: 28px;
@@ -536,22 +528,6 @@ button {
 .icon-btn:hover {
   background: var(--hover);
   color: var(--text);
-}
-.kbd {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  min-width: 18px;
-  justify-content: center;
-  padding: 1px 5px;
-  font-size: 11px;
-  line-height: 15px;
-  font-family: var(--font);
-  font-weight: 500;
-  background: rgba(128, 128, 128, 0.12);
-  border-radius: 4px;
-  border: 0.5px solid rgba(128, 128, 128, 0.22);
-  opacity: 0.7;
 }
 .segmented {
   display: inline-flex;
@@ -2030,22 +2006,6 @@ button {
   color: var(--text);
   font-size: 13px;
 }
-.shortcut-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px 20px;
-}
-.shortcut-list div {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 30px;
-  border-bottom: 0.5px solid var(--border);
-}
-.shortcut-list .keys {
-  display: inline-flex;
-  gap: 3px;
-}
 .rules {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -2178,9 +2138,6 @@ button {
 
 @media (max-width: 960px) {
   .table .hide-md {
-    display: none;
-  }
-  .topbar .btn.primary .kbd {
     display: none;
   }
 }
@@ -2366,7 +2323,6 @@ button {
     display: grid;
     place-items: center;
   }
-  .kbd,
   .hint {
     display: none;
   }
@@ -2529,9 +2485,6 @@ button {
   .emoji-grid {
     grid-template-columns: repeat(8, 1fr);
   }
-  .shortcut-list {
-    grid-template-columns: 1fr;
-  }
   .toasts {
     bottom: calc(92px + var(--safe-b));
   }
@@ -2576,9 +2529,6 @@ button {
   display: none;
 }
 @media (pointer: coarse) {
-  .hide-touch {
-    display: none !important;
-  }
   .show-touch {
     display: inline-flex;
   }

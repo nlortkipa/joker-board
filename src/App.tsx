@@ -7,19 +7,18 @@ import { Leaderboard } from './components/Leaderboard';
 import { LogGame } from './components/LogGame';
 import { PlayerEditor, Players, newPlayer } from './components/Players';
 import { Settings } from './components/Settings';
-import { Shortcuts } from './components/Shortcuts';
 import { Avatar, Modal, Segmented } from './components/ui';
 import { placesOf, type Game } from './lib/model';
 import { go, useRoute } from './lib/router';
 import { deleteGame, playerMap, startSync, UNKNOWN, useStore } from './lib/store';
 import { PERIODS, type Period } from './lib/stats';
 import { toast } from './lib/toast';
-import { cx, dayLabel, isTyping } from './lib/util';
+import { cx, dayLabel } from './lib/util';
 
 type Overlay =
   | null
   | { kind: 'log'; edit?: Game; seed?: string[] }
-  | { kind: 'player' | 'settings' | 'shortcuts' | 'delete' };
+  | { kind: 'player' | 'settings' | 'delete' };
 
 export default function App() {
   const { players, games, loaded, offline } = useStore();
@@ -37,27 +36,6 @@ export default function App() {
   const openLog = useCallback((extra?: { edit?: Game; seed?: string[] }) => {
     setOverlay({ kind: 'log', ...extra });
   }, []);
-
-  // Global keyboard shortcuts. Letters use e.code so they work on a Georgian layout too.
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (overlay || isTyping(e) || e.metaKey || e.ctrlKey || e.altKey) return;
-      const c = e.code;
-      // Stop the key from also being typed into the input the opened dialog autofocuses.
-      if (['KeyN', 'KeyP', 'KeyS', 'KeyE'].includes(c)) e.preventDefault();
-      if (c === 'KeyN') openLog();
-      else if (c === 'KeyP') setOverlay({ kind: 'player' });
-      else if (c === 'KeyS') setOverlay({ kind: 'settings' });
-      else if (c === 'KeyE' && game) openLog({ edit: game });
-      else if (e.key === '?') setOverlay({ kind: 'shortcuts' });
-      else if (e.key === 'Escape' && route.name === 'game') go('/games');
-      else if (c === 'Digit1') go('/leaderboard');
-      else if (c === 'Digit2') go('/games');
-      else if (c === 'Digit3') go('/players');
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [overlay, route.name, game, openLog]);
 
   // Large-title collapse on phones
   useEffect(() => {
@@ -266,7 +244,6 @@ export default function App() {
         <PlayerEditor isNew player={newPlayer('', players)} players={players} onClose={() => setOverlay(null)} />
       )}
       {overlay?.kind === 'settings' && <Settings players={players} games={games} onClose={() => setOverlay(null)} />}
-      {overlay?.kind === 'shortcuts' && <Shortcuts onClose={() => setOverlay(null)} />}
       {overlay?.kind === 'delete' && game && (
         <Modal
           title="წავშალო ეს თამაში?"

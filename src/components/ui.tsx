@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import type { Player } from '../lib/model';
-import { cx, MOD } from '../lib/util';
+import { cx } from '../lib/util';
 import { Close } from './Icons';
 
 export const pcStyle = (p: Pick<Player, 'color'>): CSSProperties =>
@@ -13,14 +13,6 @@ export function Avatar({ player, size, className, children }: { player: Player; 
     <span className={cx('avatar', className)} style={style} title={player.name} aria-hidden>
       {player.photo ? <img className="photo" src={player.photo} alt="" draggable={false} /> : <span className="em">{player.emoji}</span>}
       {children}
-    </span>
-  );
-}
-
-export function Kbd({ k }: { k: string }) {
-  return (
-    <span className="kbd" aria-hidden>
-      {k.replace('Mod', MOD)}
     </span>
   );
 }

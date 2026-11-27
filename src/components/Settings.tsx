@@ -5,8 +5,7 @@ import { importAll } from '../lib/store';
 import { toast } from '../lib/toast';
 import { cx } from '../lib/util';
 import { Download, Upload } from './Icons';
-import { SHORTCUTS } from './Shortcuts';
-import { Kbd, Modal, Segmented } from './ui';
+import { Modal, Segmented } from './ui';
 
 export function Settings({ players, games, onClose }: { players: Player[]; games: Game[]; onClose: () => void }) {
   const prefs = usePrefs();
@@ -90,21 +89,6 @@ export function Settings({ players, games, onClose }: { players: Player[]; games
         </div>
       </div>
 
-      <div className="field hide-touch">
-        <span>კლავიატურის მალსახმობები</span>
-        <div className="shortcut-list">
-          {SHORTCUTS.map(([keys, label]) => (
-            <div key={label}>
-              <span>{label}</span>
-              <span className="keys">
-                {keys.map((k) => (
-                  <Kbd key={k} k={k} />
-                ))}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
     </Modal>
   );
 }

@@ -1,11 +1,3 @@
-export const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
-export const MOD = isMac ? '⌘' : 'Ctrl';
-
-export const isTyping = (e: KeyboardEvent) => {
-  const t = e.target as HTMLElement | null;
-  return !!t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
-};
-
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
 
 const DAY = 86400000;
