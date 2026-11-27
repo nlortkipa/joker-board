@@ -710,6 +710,9 @@ button {
 .section-head .muted {
   font-size: 12px;
 }
+.lb-gap {
+  margin-top: 16px;
+}
 .section-head .right {
   margin-left: auto;
 }

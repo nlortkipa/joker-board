@@ -144,36 +144,7 @@ export function Leaderboard({
           )}
         </div>
       </section>
-
-      <div className="section-head">
-        <h2>დიდების დარბაზი</h2>
-      </div>
-      <div className="fame">
-        {fame.map((f, i) => (
-          <div
-            className="card fame-card"
-            key={f.label}
-            style={{ animationDelay: `${i * 60}ms`, '--tint': f.tint } as CSSProperties}
-          >
-            <div className="label">
-              <span className="emoji">{f.emoji}</span> {f.label}
-            </div>
-            <div className="value num">
-              {f.value}
-              <small>{f.unit}</small>
-            </div>
-            <div className="who">
-              <Avatar player={f.p} size={22} /> <b>{f.p.name}</b>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="section-head">
-        <h2>ცხრილი</h2>
-        <span className="muted">{res.length} თამაში</span>
-      </div>
-      <div className="card" style={{ overflowX: 'auto' }}>
+      <div className="card lb-gap" style={{ overflowX: 'auto' }}>
         <table className="table">
           <thead>
             <tr>
@@ -230,21 +201,32 @@ export function Leaderboard({
 
       {res.length > 1 && (
         <>
-          <div className="section-head">
-            <h2>რბოლა</h2>
-            <span className="muted">მოგებების ჯამი</span>
-          </div>
-          <div className="card chart-card">
+          <div className="card chart-card lb-gap">
             <RaceChart players={ranked.map((s) => s.player)} res={res} />
           </div>
         </>
       )}
-
-      <div className="section-head">
-        <h2>დღის ჩემპიონები</h2>
-        <span className="muted">ბოლო ორი კვირა</span>
+      <div className="fame lb-gap">
+        {fame.map((f, i) => (
+          <div
+            className="card fame-card"
+            key={f.label}
+            style={{ animationDelay: `${i * 60}ms`, '--tint': f.tint } as CSSProperties}
+          >
+            <div className="label">
+              <span className="emoji">{f.emoji}</span> {f.label}
+            </div>
+            <div className="value num">
+              {f.value}
+              <small>{f.unit}</small>
+            </div>
+            <div className="who">
+              <Avatar player={f.p} size={22} /> <b>{f.p.name}</b>
+            </div>
+          </div>
+        ))}
       </div>
-      <div className="recent-strip">
+      <div className="recent-strip lb-gap">
         {days.map((d) => (
           <div
             key={d.start}
