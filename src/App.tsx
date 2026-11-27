@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Toasts } from './components/Feedback';
-import { GameResult, gameTitle, shareGame } from './components/GameResult';
+import { GameResult, gameTitle } from './components/GameResult';
 import { Games } from './components/Games';
-import { Back, Cards, Gear, People, Plus, Share, Trophy } from './components/Icons';
+import { Back, Cards, Gear, People, Plus, Trophy } from './components/Icons';
 import { Leaderboard } from './components/Leaderboard';
 import { LogGame } from './components/LogGame';
 import { PlayerEditor, Players, newPlayer } from './components/Players';
@@ -17,7 +17,7 @@ import { cx, dayLabel } from './lib/util';
 
 type Overlay =
   | null
-  | { kind: 'log'; edit?: Game; seed?: string[] }
+  | { kind: 'log'; edit?: Game }
   | { kind: 'player' | 'settings' | 'delete' };
 
 export default function App() {
@@ -33,7 +33,7 @@ export default function App() {
   const pm = useMemo(() => playerMap(players), [players]);
   const recent = useMemo(() => [...games].sort((a, b) => b.playedAt.localeCompare(a.playedAt)).slice(0, 4), [games]);
 
-  const openLog = useCallback((extra?: { edit?: Game; seed?: string[] }) => {
+  const openLog = useCallback((extra?: { edit?: Game }) => {
     setOverlay({ kind: 'log', ...extra });
   }, []);
 
@@ -109,17 +109,11 @@ export default function App() {
       );
     } else {
       title = gameTitle(game);
-      right = (
-        <button className="icon-btn" onClick={() => shareGame(game, players)} aria-label="გაზიარება" title="გაზიარება">
-          <Share />
-        </button>
-      );
       content = (
         <GameResult
           game={game}
           players={players}
           onEdit={() => openLog({ edit: game })}
-          onAgain={() => openLog({ seed: game.playerIds })}
           onDelete={() => setOverlay({ kind: 'delete' })}
         />
       );
@@ -238,7 +232,7 @@ export default function App() {
       </nav>
 
       {overlay?.kind === 'log' && (
-        <LogGame players={players} games={games} edit={overlay.edit} seed={overlay.seed} onClose={() => setOverlay(null)} />
+        <LogGame players={players} games={games} edit={overlay.edit} onClose={() => setOverlay(null)} />
       )}
       {overlay?.kind === 'player' && (
         <PlayerEditor isNew player={newPlayer('', players)} players={players} onClose={() => setOverlay(null)} />

@@ -16,20 +16,20 @@ export function LogGame({
   players,
   games,
   edit,
-  seed,
   onClose,
 }: {
   players: Player[];
   games: Game[];
   edit?: Game;
-  seed?: string[];
   onClose: () => void;
 }) {
   const ids = new Set(players.map((p) => p.id));
   const last = [...games].sort((a, b) => b.playedAt.localeCompare(a.playedAt))[0];
   const initialIds = edit
     ? edit.playerIds
-    : seed ?? (last && last.playerIds.every((id) => ids.has(id)) ? last.playerIds : players.slice(0, SEATS).map((p) => p.id));
+    : last && last.playerIds.every((id) => ids.has(id))
+      ? last.playerIds
+      : players.slice(0, SEATS).map((p) => p.id);
 
   const [slots, setSlots] = useState<(string | null)[]>(() =>
     Array.from({ length: SEATS }, (_, i) => initialIds[i] ?? null),

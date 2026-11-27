@@ -1,8 +1,7 @@
 import { fmtScore, placesOf, type Game, type Player } from '../lib/model';
 import { UNKNOWN } from '../lib/store';
-import { toast } from '../lib/toast';
 import { dayLabel, timeLabel } from '../lib/util';
-import { Pencil, Share, Trash } from './Icons';
+import { Pencil, Trash } from './Icons';
 import { Avatar, pcStyle } from './ui';
 
 const MEDALS = ['🥇', '🥈', '🥉', '4'];
@@ -17,29 +16,15 @@ export function ranked(game: Game, players: Player[]) {
 
 export const gameTitle = (game: Game) => `${dayLabel(new Date(game.playedAt).getTime())} · ${timeLabel(game.playedAt)}`;
 
-export async function shareGame(game: Game, players: Player[]) {
-  const lines = ranked(game, players).map((r) => `${MEDALS[r.place - 1] ?? `${r.place}.`} ${r.p.emoji} ${r.p.name} — ${fmtScore(r.score)}`);
-  const text = `🃏 ჯოკერი · ${gameTitle(game)}\n${lines.join('\n')}`;
-  try {
-    if (navigator.share && matchMedia('(pointer: coarse)').matches) return void (await navigator.share({ text }));
-    await navigator.clipboard.writeText(text);
-    toast('შედეგი დაკოპირდა');
-  } catch (e) {
-    if ((e as Error).name !== 'AbortError') toast('გაზიარება ვერ მოხერხდა', 'error');
-  }
-}
-
 export function GameResult({
   game,
   players,
   onEdit,
-  onAgain,
   onDelete,
 }: {
   game: Game;
   players: Player[];
   onEdit: () => void;
-  onAgain: () => void;
   onDelete: () => void;
 }) {
   const rows = ranked(game, players);
@@ -89,12 +74,6 @@ export function GameResult({
       <div className="result-actions">
         <button className="btn large" onClick={onEdit}>
           <Pencil /> რედაქტირება
-        </button>
-        <button className="btn large" onClick={onAgain}>
-          🔁 იგივე შემადგენლობით
-        </button>
-        <button className="btn large" onClick={() => shareGame(game, players)}>
-          <Share /> გაზიარება
         </button>
         <button className="btn large ghost danger" onClick={onDelete}>
           <Trash /> წაშლა

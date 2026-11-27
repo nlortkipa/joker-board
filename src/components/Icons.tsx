@@ -64,12 +64,6 @@ export const Check = (p: P) => (
     <path d="m5 12.5 4.5 4.5L19 7.5" />
   </svg>
 );
-export const Share = (p: P) => (
-  <svg {...base(p)}>
-    <path d="M12 3v12M8 7l4-4 4 4" />
-    <path d="M8 10H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-2" />
-  </svg>
-);
 export const Trash = (p: P) => (
   <svg {...base(p)}>
     <path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
