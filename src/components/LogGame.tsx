@@ -7,7 +7,7 @@ import { cx, toLocalInput } from '../lib/util';
 import { confetti } from './Feedback';
 import { Close } from './Icons';
 import { newPlayer } from './Players';
-import { Avatar, Kbd, Modal, pcStyle } from './ui';
+import { Avatar, Modal, pcStyle } from './ui';
 
 const MEDALS = ['🥇', '🥈', '🥉', '4'];
 
@@ -122,7 +122,7 @@ export function LogGame({
             გაუქმება
           </button>
           <button className="btn primary" disabled={!valid} onClick={save}>
-            შენახვა <Kbd k="↵" />
+            შენახვა
           </button>
         </>
       }

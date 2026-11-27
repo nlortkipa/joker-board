@@ -3,7 +3,7 @@ import { UNKNOWN } from '../lib/store';
 import { toast } from '../lib/toast';
 import { dayLabel, timeLabel } from '../lib/util';
 import { Pencil, Share, Trash } from './Icons';
-import { Avatar, Kbd, pcStyle } from './ui';
+import { Avatar, pcStyle } from './ui';
 
 const MEDALS = ['🥇', '🥈', '🥉', '4'];
 
@@ -88,7 +88,7 @@ export function GameResult({
 
       <div className="result-actions">
         <button className="btn large" onClick={onEdit}>
-          <Pencil /> რედაქტირება <Kbd k="E" />
+          <Pencil /> რედაქტირება
         </button>
         <button className="btn large" onClick={onAgain}>
           🔁 იგივე შემადგენლობით

@@ -8,7 +8,7 @@ import { LogGame } from './components/LogGame';
 import { PlayerEditor, Players, newPlayer } from './components/Players';
 import { Settings } from './components/Settings';
 import { Shortcuts } from './components/Shortcuts';
-import { Avatar, Kbd, Modal, Segmented } from './components/ui';
+import { Avatar, Modal, Segmented } from './components/ui';
 import { placesOf, type Game } from './lib/model';
 import { go, useRoute } from './lib/router';
 import { deleteGame, playerMap, startSync, UNKNOWN, useStore } from './lib/store';
@@ -84,7 +84,7 @@ export default function App() {
 
   const logBtn = (
     <button className="btn primary hide-mobile" onClick={() => openLog()}>
-      <Plus /> თამაშის ჩაწერა <Kbd k="N" />
+      <Plus /> თამაშის ჩაწერა
     </button>
   );
   const periodPicker = (
@@ -111,7 +111,7 @@ export default function App() {
     right = (
       <>
         <button className="btn primary hide-mobile" onClick={() => setOverlay({ kind: 'player' })}>
-          <Plus /> მოთამაშის დამატება <Kbd k="P" />
+          <Plus /> მოთამაშის დამატება
         </button>
       </>
     );
@@ -194,7 +194,7 @@ export default function App() {
         )}
         <div className="side-foot">
           <button className="btn primary block large" onClick={() => openLog()}>
-            <Plus /> თამაშის ჩაწერა <Kbd k="N" />
+            <Plus /> თამაშის ჩაწერა
           </button>
           <button className="nav-item" onClick={() => setOverlay({ kind: 'settings' })}>
             <span className="nav-icon gray">
@@ -202,7 +202,7 @@ export default function App() {
             </span>
             პარამეტრები
             <span className="count">
-              <Kbd k="S" />
+             
             </span>
           </button>
         </div>

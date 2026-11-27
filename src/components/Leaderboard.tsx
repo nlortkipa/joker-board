@@ -4,7 +4,7 @@ import { pct, playerStats, results, type Period, type PlayerStats } from '../lib
 import { cx, weekdayNarrow } from '../lib/util';
 import { Chevron, Plus } from './Icons';
 import { RaceChart } from './RaceChart';
-import { Avatar, Empty, Kbd, Modal, pcStyle } from './ui';
+import { Avatar, Empty, Modal, pcStyle } from './ui';
 
 const NARROW = '(max-width: 860px)';
 function useNarrow() {
@@ -103,7 +103,7 @@ export function Leaderboard({
         text="ჩაწერე პირველი თამაშის შედეგი და რეიტინგი აქ გამოჩნდება."
         action={
           <button className="btn primary large" onClick={onLog}>
-            <Plus /> თამაშის ჩაწერა <Kbd k="N" />
+            <Plus /> თამაშის ჩაწერა
           </button>
         }
       />

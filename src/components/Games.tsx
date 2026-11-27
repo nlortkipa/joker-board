@@ -4,7 +4,7 @@ import { go } from '../lib/router';
 import { playerMap, UNKNOWN } from '../lib/store';
 import { cx, dayLabel, timeLabel } from '../lib/util';
 import { Chevron, Plus } from './Icons';
-import { Avatar, Empty, Kbd, pcStyle } from './ui';
+import { Avatar, Empty, pcStyle } from './ui';
 
 export function Games({ players, games, onLog }: { players: Player[]; games: Game[]; onLog: () => void }) {
   const pm = useMemo(() => playerMap(players), [players]);
@@ -28,7 +28,7 @@ export function Games({ players, games, onLog }: { players: Player[]; games: Gam
         text="ყოველი ჩაწერილი თამაში აქ გამოჩნდება — ნებისმიერ დროს შეგიძლია გადახედო."
         action={
           <button className="btn primary large" onClick={onLog}>
-            <Plus /> თამაშის ჩაწერა <Kbd k="N" />
+            <Plus /> თამაშის ჩაწერა
           </button>
         }
       />

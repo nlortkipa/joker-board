@@ -5,7 +5,7 @@ import { deletePlayer, savePlayer, uid } from '../lib/store';
 import { toast } from '../lib/toast';
 import { COLOR_NAMES, cx, EMOJIS, imageToAvatar } from '../lib/util';
 import { Pencil, Plus, Trash, Upload } from './Icons';
-import { Avatar, Empty, Kbd, Modal, pcStyle } from './ui';
+import { Avatar, Empty, Modal, pcStyle } from './ui';
 
 export function newPlayer(name: string, taken: Player[]): Player {
   const usedColors = new Set(taken.map((p) => p.color));
@@ -30,7 +30,7 @@ export function Players({ players, games, onAdd }: { players: Player[]; games: G
         text="დაამატე ყველა, ვინც თამაშობს. აურჩიე ფოტო ან ემოჯი და ფერი, რომ ადვილად გამოირჩეოდნენ."
         action={
           <button className="btn primary large" onClick={onAdd}>
-            <Plus /> მოთამაშის დამატება <Kbd k="P" />
+            <Plus /> მოთამაშის დამატება
           </button>
         }
       />
@@ -157,7 +157,7 @@ export function PlayerEditor({
             გაუქმება
           </button>
           <button className="btn primary" disabled={!valid} onClick={save}>
-            {isNew ? 'დამატება' : 'შენახვა'} <Kbd k="↵" />
+            {isNew ? 'დამატება' : 'შენახვა'}
           </button>
         </>
       }
