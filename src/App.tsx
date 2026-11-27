@@ -10,7 +10,6 @@ import { Settings } from './components/Settings';
 import { Shortcuts } from './components/Shortcuts';
 import { Avatar, Kbd, Modal, Segmented } from './components/ui';
 import { placesOf, type Game } from './lib/model';
-import { setPrefs, usePrefs } from './lib/prefs';
 import { go, useRoute } from './lib/router';
 import { deleteGame, playerMap, startSync, UNKNOWN, useStore } from './lib/store';
 import { PERIODS, type Period } from './lib/stats';
@@ -20,39 +19,28 @@ import { cx, dayLabel, isTyping } from './lib/util';
 type Overlay =
   | null
   | { kind: 'log'; edit?: Game; seed?: string[] }
-  | { kind: 'player' | 'settings' | 'shortcuts' | 'onboarding' | 'delete' };
+  | { kind: 'player' | 'settings' | 'shortcuts' | 'delete' };
 
 export default function App() {
   const { players, games, loaded, offline } = useStore();
   const route = useRoute();
-  const prefs = usePrefs();
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [period, setPeriod] = useState<Period>('all');
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => startSync(), []);
 
-  useEffect(() => {
-    if (loaded && !offline && !prefs.onboarded && games.length === 0) setOverlay((o) => o ?? { kind: 'onboarding' });
-  }, [loaded, offline, prefs.onboarded, games.length]);
-
   const game = route.name === 'game' ? games.find((g) => g.id === route.id) : undefined;
   const pm = useMemo(() => playerMap(players), [players]);
   const recent = useMemo(() => [...games].sort((a, b) => b.playedAt.localeCompare(a.playedAt)).slice(0, 4), [games]);
 
   const openLog = useCallback((extra?: { edit?: Game; seed?: string[] }) => {
-    setPrefs({ onboarded: true });
     setOverlay({ kind: 'log', ...extra });
   }, []);
 
   // Global keyboard shortcuts. Letters use e.code so they work on a Georgian layout too.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (overlay?.kind === 'onboarding' && e.code === 'KeyN') {
-        e.preventDefault();
-        openLog();
-        return;
-      }
       if (overlay || isTyping(e) || e.metaKey || e.ctrlKey || e.altKey) return;
       const c = e.code;
       // Stop the key from also being typed into the input the opened dialog autofocuses.
@@ -279,15 +267,6 @@ export default function App() {
       )}
       {overlay?.kind === 'settings' && <Settings players={players} games={games} onClose={() => setOverlay(null)} />}
       {overlay?.kind === 'shortcuts' && <Shortcuts onClose={() => setOverlay(null)} />}
-      {overlay?.kind === 'onboarding' && (
-        <Onboarding
-          onClose={() => {
-            setPrefs({ onboarded: true });
-            setOverlay(null);
-          }}
-          onStart={() => openLog()}
-        />
-      )}
       {overlay?.kind === 'delete' && game && (
         <Modal
           title="წავშალო ეს თამაში?"
@@ -318,23 +297,5 @@ export default function App() {
       )}
       <Toasts />
     </div>
-  );
-}
-
-function Onboarding({ onClose, onStart }: { onClose: () => void; onStart: () => void }) {
-  return (
-    <Modal onClose={onClose}>
-      <div className="hero-modal">
-        <img className="logo" src="/logo.svg" alt="" />
-        <h2>მოგესალმებით!</h2>
-        <p>ჩაწერე ყოველი თამაშის შედეგი და ნახე, ვინ არის ოჯახის ნამდვილი ჯოკერის ჩემპიონი.</p>
-        <div className="press hide-touch">
-          დააჭირე <span className="kbd">N</span>-ს პირველი თამაშის ჩასაწერად
-        </div>
-        <button className="btn primary large show-touch" style={{ marginTop: 18 }} onClick={onStart}>
-          პირველი თამაშის ჩაწერა
-        </button>
-      </div>
-    </Modal>
   );
 }

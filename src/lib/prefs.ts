@@ -3,12 +3,11 @@ import { useSyncExternalStore } from 'react';
 export type Theme = 'system' | 'light' | 'dark';
 export interface Prefs {
   theme: Theme;
-  onboarded: boolean;
   zoomed: boolean;
 }
 
 const KEY = 'joker-board:prefs';
-const DEFAULTS: Prefs = { theme: 'system', onboarded: false, zoomed: false };
+const DEFAULTS: Prefs = { theme: 'system', zoomed: false };
 
 function read(): Prefs {
   try {
